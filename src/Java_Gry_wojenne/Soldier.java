@@ -5,16 +5,26 @@ public class Soldier {
     private int experience;
     private String title;
 
-    public Soldier(int level) {
-        if (level < 1 || level > 4) {   throw new IllegalArgumentException("Level must be between 1 and 4.");   }
-        this.level = level;
+
+    public Soldier(String title) {
+        this.level = assignTitle(title);
         this.experience = 1;
-        this.title = assignTitle(level);
+        this.title = title;
     }
 
 
 
     // Assign title based on level
+    private int assignTitle(String title) {
+        return switch (title) {
+            case "szeregowy" -> 1;
+            case "kapral" -> 2;
+            case "kapitan" -> 3;
+            case "major" -> 4;
+            default -> throw new IllegalArgumentException("Invalid level.");
+        };
+    }
+
     private String assignTitle(int level) {
         return switch (level) {
             case 1 -> "szeregowy";
@@ -51,10 +61,11 @@ public class Soldier {
     }
 
     // Soldier gets promoted after reaching experience of 5x his level
-    public void isPromoted() {
+    public void promote() {
         if(this.experience >= 5 * this.level && this.level < 5) {
+            this.experience = 1;
             this.level++;
-
+            this.title = assignTitle(this.level);
         }
     }
 }

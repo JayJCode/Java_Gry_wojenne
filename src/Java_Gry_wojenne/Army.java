@@ -11,15 +11,17 @@ public class Army {
         this.soldiers = new ArrayList<>();
     }
 
-    public void addSoldier(int level) {
-        soldiers.add(new Soldier(level));
+    public void addSoldier(String title) {
+        soldiers.add(new Soldier(title));
     }
 
-    public void removeSoldier() {
+    public void removeSoldiers() {
         soldiers.removeIf(Soldier::isDead);
     }
 
     public List<Soldier> getArmy() {
         return soldiers;
     }
+
+
 }
