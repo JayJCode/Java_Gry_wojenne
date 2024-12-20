@@ -14,7 +14,7 @@ public class Soldier {
 
 
 
-    // Assign title based on level
+    // Assign level based on title
     private int assignTitle(String title) {
         return switch (title) {
             case "szeregowy" -> 1;
@@ -25,6 +25,7 @@ public class Soldier {
         };
     }
 
+    // Assign title based on level
     private String assignTitle(int level) {
         return switch (level) {
             case 1 -> "szeregowy";
