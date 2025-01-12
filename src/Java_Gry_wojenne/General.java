@@ -1,23 +1,28 @@
 package Java_Gry_wojenne;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
-public class General {
+public class General implements Serializable {
     private int gold;
+    final String name;
     public Army army;
-    public Shop shop;
-    public Trainer trainer;
+    public Buy buy;
+    public Train train;
+    public Attack attack;
 
-    public General() {
+    public General(String name) {
         this.gold = 50;
         this.army = new Army();
-        this.shop = new Shop();
-        this.trainer = new Trainer();
+        this.buy = new Buy();
+        this.train = new Train();
+        this.name = name;
+        this.attack = new Attack();
     }
 
-    public int getGold() {   return gold;   }
+    public int getGold() {   return this.gold;   }
 
     public void setGold(int gold) {   this.gold = gold;   }
+
+    public String getName() {   return this.name;   }
 
 }

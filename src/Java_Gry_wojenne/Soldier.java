@@ -1,6 +1,8 @@
 package Java_Gry_wojenne;
 
-public class Soldier {
+import java.io.Serializable;
+
+public class Soldier implements Serializable {
     private int level;
     private int experience;
     private String title;
@@ -68,5 +70,11 @@ public class Soldier {
             this.level++;
             this.title = assignTitle(this.level);
         }
+    }
+
+    public String toString() {
+        return "Stopień: '" + this.title +
+                "'\nDoświadczenie: " + this.experience +
+                "\n";
     }
 }
