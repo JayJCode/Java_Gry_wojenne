@@ -12,7 +12,7 @@ public class Train implements Action, Serializable {
             int amount = (int) troops[i + 1];
             int selected = 0;
             for (Soldier soldier : general.army.getArmy()) {
-                if(soldier.getTitle()==title && selected<amount) {
+                if(Objects.equals(soldier.getTitle(), title) && selected<amount) {
                     selected++;
                     soldier.setExperience(soldier.getExperience() + 1);
                     soldier.promote();
@@ -31,16 +31,14 @@ public class Train implements Action, Serializable {
             int amount = (int) troops[i + 1];
             int selected = 0;
             for (Soldier soldier : general.army.getArmy()) {
-                System.out.println("soldier title: " + soldier.getTitle() + "\ttitle: " + title + "\tselected: " + selected + "\tamount: " + amount);
                 if(Objects.equals(soldier.getTitle(), title) && selected<amount) {
-                    System.out.println("wywołuje się");
                     selected++;
                     potentialCost =+ soldier.getLevel();
                 }
             }
-            System.out.println("selected: " + selected + "\tamount: " + amount);
             if(selected < amount) {
-                throw new IllegalArgumentException("Selected more soldiers, than currently having.");
+                System.out.println("Chcesz wyszkolić więcej jednostek niż posiadasz!");
+                return false;
             }
         }
         return potentialCost <= general.getGold();

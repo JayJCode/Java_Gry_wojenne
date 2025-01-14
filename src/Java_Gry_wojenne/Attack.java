@@ -44,6 +44,7 @@ public class Attack implements Action, Serializable {
         for (Soldier soldier : loser.army.getArmy()) {
             soldier.setExperience(soldier.getExperience() - 1);
         }
+        System.out.println("Generał: " + loser.name + " traci:");
         loser.army.removeSoldiers();
 
         System.out.println("Wygrywa gracz: " + winner.name + ", który zabiera przegranemu " + charge + " złota!");
@@ -53,9 +54,10 @@ public class Attack implements Action, Serializable {
         int randomSoldier = ThreadLocalRandom.current().nextInt(0, general.army.getArmy().size());
         int randomSoldier2 = ThreadLocalRandom.current().nextInt(0, general2.army.getArmy().size());
 
-        general.army.getArmy().remove(randomSoldier);
-        general2.army.getArmy().remove(randomSoldier2);
-
         System.out.println("Remis, oboje generałowie tracą jedną losową jednostkę.");
+        System.out.println("Generał: " + general.name + " traci:");
+        general.army.getArmy().remove(randomSoldier);
+        System.out.println("Generał: " + general2.name + " traci:");
+        general2.army.getArmy().remove(randomSoldier2);
     }
 }

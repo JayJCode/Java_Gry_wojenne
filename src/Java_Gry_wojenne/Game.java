@@ -1,14 +1,13 @@
 package Java_Gry_wojenne;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Game implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private List<General> generals;
     public int actualTurn;
     public int actualPlayer;
@@ -27,15 +26,10 @@ public class Game implements Serializable {
     }
 
     public void launchGame() throws IOException, InterruptedException {
-        System.out.println("Witajcie generałowie!\n" +
-                "Każdy z Was zaczyna z 50 monetami, za które macie werbować jednostki do waszych armii.\n" +
-                "Możecie je również szkolić i nawzajem się atakować.\n" +
-                "Waszym celem jest posiadanie największej armii!\n" +
-                "Gra kończy się, jak wszystkim graczom skończy się złoto.\n" +
-                "Gracz, który nie posiada już żadnych możliwości ruchu lub nie chce dalej grać - poddaje się.\n");
-        while(true) {
+        while(!gameEnded()) {
             selectAction();
         }
+        System.out.println("Zwycięstwo! Gracz: " + generals.getFirst() + " pokonał wszystkich swoich przeciwników!");
     }
 
     private void buySoldiers(General general) throws IOException {
@@ -102,7 +96,7 @@ public class Game implements Serializable {
             try {
                 beingAttackedGeneral = Integer.parseInt(reader.readLine());
             } catch (IOException e) {
-                System.out.println("Podaj liczbę z zakresu od 1 do " + generals.size());
+                System.out.println("Podaj liczbę z zakresu od 1 do " + (generals.size()+1));
             }
         }
         return beingAttackedGeneral;
@@ -110,7 +104,7 @@ public class Game implements Serializable {
 
     private void showGold(General general) throws InterruptedException, IOException {
         System.out.println("Dostępne środki, to: " + general.getGold());
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(3);
         selectAction();
     }
 
@@ -119,7 +113,7 @@ public class Game implements Serializable {
         for(Soldier soldier : general.army.getArmy()) {
             System.out.println(soldier.toString());
         }
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(3);
         selectAction();
     }
 
@@ -133,7 +127,7 @@ public class Game implements Serializable {
 
     private void selectAction() throws IOException, InterruptedException {
         String playerTurn;
-        System.out.println("Gra trwa: " + actualTurn);
+        System.out.println("\n\nGra trwa: " + actualTurn);
         System.out.println("Tura gracza: " + generals.get(actualPlayer).getName());
         System.out.println("Wybierz ruch:\n" +
                 "1) Aby kupić jednostki wpisz: kup\n" +
@@ -154,6 +148,10 @@ public class Game implements Serializable {
             case "poddaj" -> lose(generals.get(actualPlayer));
             case "save" -> backup.save(this);
             case "load" -> loadGame();
+            default -> {
+                System.out.println("Niepoprawny wybór. Spróbuj ponownie.");
+                selectAction();
+            }
         }
     }
 
@@ -161,6 +159,7 @@ public class Game implements Serializable {
         actualTurn++;
         actualPlayer++;
         actualPlayer = actualPlayer % generals.size();
+        removeLosers();
     }
 
     public List<General> getGenerals() {
@@ -187,15 +186,36 @@ public class Game implements Serializable {
         this.actualPlayer = actualPlayer;
     }
 
-    private void loadGame() {
+    public void loadGame() {
+        if (this.backup == null) {
+            this.backup = new Backup();
+        }
         Game loadedGame = backup.load();
         if (loadedGame != null) {
             this.generals = loadedGame.getGenerals();
             this.actualTurn = loadedGame.getActualTurn();
             this.actualPlayer = loadedGame.getActualPlayer();
             System.out.println("Gra została wczytana pomyślnie.");
-        } else {
-            System.out.println("Nie udało się wczytać gry.");
+        }
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        this.backup = new Backup();
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    private boolean gameEnded() {
+        return generals.size() < 2;
+    }
+
+    private void removeLosers() {
+        for(General general : generals.stream().toList()) {
+            general.hasLost();
+            if(general.lost) {
+                generals.remove(general);
+            }
         }
     }
 }

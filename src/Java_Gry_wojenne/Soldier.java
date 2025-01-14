@@ -60,6 +60,7 @@ public class Soldier implements Serializable {
 
     // Soldier dies after their experience goes down to 0
     public boolean isDead() {
+        System.out.println("Jednostka: " + title + " umiera!");
         return this.experience <= 0;
     }
 
@@ -68,7 +69,9 @@ public class Soldier implements Serializable {
         if(this.experience >= 5 * this.level && this.level < 5) {
             this.experience = 1;
             this.level++;
+            String temp = this.title;
             this.title = assignTitle(this.level);
+            System.out.println("Jednostka: " + temp + " awansowała na stopień " + title);
         }
     }
 
